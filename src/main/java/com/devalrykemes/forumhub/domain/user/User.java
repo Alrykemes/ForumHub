@@ -16,10 +16,13 @@ public class User {
     @Column(name = "id")
     private UUID id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
     private String password;
 
     @ManyToMany

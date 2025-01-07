@@ -1,12 +1,12 @@
-package com.devalrykemes.forumhub.domain.profile;
+package com.devalrykemes.forumhub.domain.course;
 
 import jakarta.persistence.*;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "profile")
-public class Profile {
+@Table(name = "course")
+public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,4 +15,9 @@ public class Profile {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "category")
+    private String category;
+
+
 }

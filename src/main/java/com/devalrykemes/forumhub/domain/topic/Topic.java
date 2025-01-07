@@ -1,11 +1,14 @@
 package com.devalrykemes.forumhub.domain.topic;
 
+import com.devalrykemes.forumhub.domain.comment.Comment;
+import com.devalrykemes.forumhub.domain.course.Course;
 import jakarta.persistence.*;
 import lombok.*;
 
 import com.devalrykemes.forumhub.domain.user.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -37,7 +40,12 @@ public class Topic {
     @JoinColumn(name = "user_id")
     private User creator;
 
-    private String course;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToMany
+    private List<Comment> comments;
 
 
 }
