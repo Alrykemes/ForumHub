@@ -2,6 +2,7 @@ package com.devalrykemes.forumhub.domain.topic;
 
 import com.devalrykemes.forumhub.domain.comment.Comment;
 import com.devalrykemes.forumhub.domain.course.Course;
+import com.devalrykemes.forumhub.domain.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ import java.util.UUID;
 public class Topic {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
@@ -37,15 +38,11 @@ public class Topic {
     private String status;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User creator;
+    @JoinColumn(name = "profile_id")
+    private Profile creator;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")
     private Course course;
-
-    @ManyToMany
-    private List<Comment> comments;
-
 
 }

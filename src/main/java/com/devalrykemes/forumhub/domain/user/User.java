@@ -3,16 +3,24 @@ package com.devalrykemes.forumhub.domain.user;
 import com.devalrykemes.forumhub.domain.profile.Profile;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "user")
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+@Table(name = "users")
+@Entity(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
@@ -27,4 +35,10 @@ public class User {
 
     @ManyToMany
     private List<Profile> profiles;
+
+    public User(UserRequestDto data) {
+        this.name = data.name();
+        this.email = data.email();
+        this.password = data.password();
+    }
 }
