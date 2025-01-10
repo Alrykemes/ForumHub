@@ -1,4 +1,7 @@
 package com.devalrykemes.forumhub.domain.user;
 
-public record UserRequestDto(String name, String email, String password, String confirmPassword) {
+import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotBlank;
+
+public record UserRequestDto(@Nonnull @NotBlank String name, @Nonnull @NotBlank String email, @Nonnull @NotBlank String password, @Nonnull @NotBlank String confirmPassword) {
 }
