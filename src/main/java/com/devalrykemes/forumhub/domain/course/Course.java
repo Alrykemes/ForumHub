@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -17,9 +15,9 @@ import java.util.UUID;
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -27,5 +25,8 @@ public class Course {
     @Column(name = "category")
     private String category;
 
-
+    public Course(CourseRequestDto data) {
+        this.name = data.name();
+        this.category = data.category();
+    }
 }
