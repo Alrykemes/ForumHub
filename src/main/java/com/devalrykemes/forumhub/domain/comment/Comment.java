@@ -32,8 +32,8 @@ public class Comment {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "solved")
+    private Boolean solved;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
@@ -42,4 +42,10 @@ public class Comment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Topic_Id")
     private Topic topic;
+
+    public Comment(CommentRequestDto data) {
+        this.menssage = data.menssage();
+        this.createdAt = LocalDateTime.now();
+        this.solved = false;
+    }
 }

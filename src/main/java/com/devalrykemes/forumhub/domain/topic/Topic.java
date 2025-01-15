@@ -34,15 +34,23 @@ public class Topic {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private TopicStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile creator;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
+
+    public Topic(TopicRequestDto data) {
+        this.title = data.title();
+        this.menssage = data.menssage();
+        this.createdAt = LocalDateTime.now();
+        this.status = TopicStatus.INPROGRESS;
+    }
 
 }

@@ -5,6 +5,7 @@ import com.devalrykemes.forumhub.domain.course.CourseRequestDto;
 import com.devalrykemes.forumhub.domain.course.CourseResponseDto;
 import com.devalrykemes.forumhub.domain.course.CourseUpdateDto;
 import com.devalrykemes.forumhub.repository.CourseRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +21,9 @@ public class CourseService {
         return courseRepository.findAll(pageable).map(CourseResponseDto::new);
     }
 
-    public CourseResponseDto getCourseById(Long id) {
+    public CourseResponseDto getCourseById(Long id) throws IllegalArgumentException {
         return new CourseResponseDto(courseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Course not found: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + id)));
     }
 
     public CourseResponseDto createCourse(CourseRequestDto courseDto) {
@@ -32,10 +33,14 @@ public class CourseService {
 
     public CourseResponseDto updateCourse(CourseUpdateDto courseDto) {
         courseRepository.updateCourse(courseDto.id(), courseDto.name(), courseDto.category());
-        return new CourseResponseDto(courseDto.id(), courseDto.name(), courseDto.category());
+        return this.getCourseById(courseDto.id());
     }
 
     public void deleteCourseById(Long id) {
         courseRepository.deleteById(id);
+    }
+
+    public Course courseById(Long id) {
+        return courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course not found: " + id));
     }
 }

@@ -5,6 +5,7 @@ import com.devalrykemes.forumhub.domain.user.UserRequestDto;
 import com.devalrykemes.forumhub.domain.user.UserResponseDto;
 import com.devalrykemes.forumhub.domain.user.UserUpdateDto;
 import com.devalrykemes.forumhub.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +17,17 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserResponseDto getUserById(UUID userId) {
-        return new UserResponseDto(userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("user not found")));
+    public UserResponseDto getUserById(UUID userId) throws IllegalArgumentException {
+        return new UserResponseDto(this.userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found: " + userId)));
     }
 
     public UserResponseDto createUser(UserRequestDto user) throws IllegalArgumentException {
         if (user.email().contains("@")) {
             if(user.password().equals(user.confirmPassword())) {
-                if(userRepository.existsByEmail(user.email())) {
+                if(this.userRepository.existsByEmail(user.email())) {
                     throw new IllegalArgumentException("Email already exists");
                 }
-                User newUser = userRepository.save(new User(user));
+                User newUser = this.userRepository.save(new User(user));
                 return new UserResponseDto(newUser);
             } else {
                 throw new IllegalArgumentException("Passwords do not match");
@@ -39,7 +40,7 @@ public class UserService {
     public UserResponseDto updateUser(UserUpdateDto user) throws IllegalArgumentException {
         if (user.email().contains("@")) {
             if(user.password().equals(user.confirmPassword())) {
-                userRepository.updateUser(user.id(), user.name(), user.email(), user.password());
+                this.userRepository.updateUser(user.id(), user.name(), user.email(), user.password());
                 return this.getUserById(user.id());
             } else {
                 throw new IllegalArgumentException("Passwords do not match");
@@ -50,6 +51,11 @@ public class UserService {
     }
 
     public void deleteUser(UUID userId) {
-        userRepository.deleteById(userId);
+        this.getUserById(userId);
+        this.userRepository.deleteById(userId);
+    }
+
+    public User userforProfileById(UUID userId) {
+        return this.userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found: " + userId));
     }
 }

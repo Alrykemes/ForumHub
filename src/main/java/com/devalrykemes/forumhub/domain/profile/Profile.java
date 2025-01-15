@@ -1,5 +1,6 @@
 package com.devalrykemes.forumhub.domain.profile;
 
+import com.devalrykemes.forumhub.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,4 +24,12 @@ public class Profile {
 
     @Column(name = "name")
     private String name;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_user", nullable = false)
+    private User userOwner;
+
+    public Profile(ProfileRequestDto data) {
+        this.name = data.name();
+    }
 }

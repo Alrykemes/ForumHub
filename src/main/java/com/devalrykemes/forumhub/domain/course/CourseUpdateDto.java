@@ -2,8 +2,9 @@ package com.devalrykemes.forumhub.domain.course;
 
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 public record CourseUpdateDto(@Nonnull Long id,
-                              @Nonnull @NotBlank String name,
-                              @Nonnull @NotBlank String category) {
+                              @NotEmpty @NotBlank String name,
+                              @NotEmpty @NotBlank String category) {
 }

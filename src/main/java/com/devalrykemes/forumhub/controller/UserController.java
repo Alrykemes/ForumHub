@@ -7,7 +7,6 @@ import com.devalrykemes.forumhub.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -15,7 +14,7 @@ import java.net.URI;
 import java.util.UUID;
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
@@ -29,15 +28,9 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> RegisterNewUser(@RequestBody @Valid UserRequestDto user, UriComponentsBuilder uriBuilder) {
-        try {
-            UserResponseDto userResponse = userService.createUser(user);
-            URI uri = uriBuilder.path("/user/{id}").buildAndExpand(userResponse.id()).toUri();
-            return ResponseEntity.created(uri).body(userResponse);
-        } catch (IllegalArgumentException ex1) {
-            return ResponseEntity.badRequest().body(ex1.getMessage());
-        } catch (Exception ex2) {
-            return ResponseEntity.badRequest().body("Not a valid request");
-        }
+        UserResponseDto userResponse = userService.createUser(user);
+        URI uri = uriBuilder.path("/user/{id}").buildAndExpand(userResponse.id()).toUri();
+        return ResponseEntity.created(uri).body(userResponse);
     }
 
     @PutMapping("/update")
