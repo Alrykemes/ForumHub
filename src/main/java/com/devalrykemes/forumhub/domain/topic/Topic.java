@@ -6,11 +6,10 @@ import com.devalrykemes.forumhub.domain.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
-import com.devalrykemes.forumhub.domain.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -45,6 +44,9 @@ public class Topic {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     public Topic(TopicRequestDto data) {
         this.title = data.title();

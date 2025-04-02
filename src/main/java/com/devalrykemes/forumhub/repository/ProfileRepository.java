@@ -15,4 +15,10 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Transactional
     @Query(nativeQuery = true, value = "UPDATE profile SET name = :name WHERE id = :id AND id_user = :idUser")
     public void updateProfileById(@Param("id") Long id, @Param("name") String name, @Param("idUser") UUID idUser);
+
+    @Query(value = "SELECT CASE WHEN COUNT(p.id) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM profile p " +
+            "JOIN users u ON p.id_user = u.id " +
+            "WHERE p.id = :profileId AND u.email = :email", nativeQuery = true)
+    Boolean existsByProfileIdAndCreatorEmail(@Param("profileId") Long profileId, @Param("email") String email);
 }

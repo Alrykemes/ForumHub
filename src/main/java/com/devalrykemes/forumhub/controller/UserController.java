@@ -1,22 +1,21 @@
 package com.devalrykemes.forumhub.controller;
 
-import com.devalrykemes.forumhub.domain.user.UserRequestDto;
 import com.devalrykemes.forumhub.domain.user.UserResponseDto;
 import com.devalrykemes.forumhub.domain.user.UserUpdateDto;
 import com.devalrykemes.forumhub.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.UUID;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@SecurityRequirement(name = "bearer-key")
 public class UserController {
 
     private final UserService userService;
@@ -24,13 +23,6 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> RegisterNewUser(@RequestBody @Valid UserRequestDto user, UriComponentsBuilder uriBuilder) {
-        UserResponseDto userResponse = userService.createUser(user);
-        URI uri = uriBuilder.path("/user/{id}").buildAndExpand(userResponse.id()).toUri();
-        return ResponseEntity.created(uri).body(userResponse);
     }
 
     @PutMapping("/update")

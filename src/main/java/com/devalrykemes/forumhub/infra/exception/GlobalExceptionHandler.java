@@ -1,4 +1,4 @@
-package com.devalrykemes.forumhub.controller;
+package com.devalrykemes.forumhub.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;

@@ -4,6 +4,7 @@ import com.devalrykemes.forumhub.domain.profile.ProfileRequestDto;
 import com.devalrykemes.forumhub.domain.profile.ProfileResponseDto;
 import com.devalrykemes.forumhub.domain.profile.ProfileUpdateDto;
 import com.devalrykemes.forumhub.service.ProfileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.net.URI;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/profile")
+@SecurityRequirement(name = "bearer-key")
 public class ProfileController {
 
     private final ProfileService profileService;

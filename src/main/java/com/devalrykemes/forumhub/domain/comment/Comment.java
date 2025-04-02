@@ -3,7 +3,6 @@ package com.devalrykemes.forumhub.domain.comment;
 
 import com.devalrykemes.forumhub.domain.profile.Profile;
 import com.devalrykemes.forumhub.domain.topic.Topic;
-import com.devalrykemes.forumhub.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,7 +31,7 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @Column(name = "solved")
-    private Boolean solved;
+    private Boolean resolved;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
@@ -46,6 +44,6 @@ public class Comment {
     public Comment(CommentRequestDto data) {
         this.menssage = data.menssage();
         this.createdAt = LocalDateTime.now();
-        this.solved = false;
+        this.resolved = false;
     }
 }

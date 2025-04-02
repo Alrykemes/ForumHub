@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             "WHERE email = :email;")
     public Boolean existsByEmail(@Param("email") String email);
 
+    @Query(nativeQuery = true, value = "SELECT * FROM users WHERE email = :email;")
+    public Optional<User> findByEmail(@Param("email") String email);
+
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value = "UPDATE users SET name = :name, email = :email, password = :password " +

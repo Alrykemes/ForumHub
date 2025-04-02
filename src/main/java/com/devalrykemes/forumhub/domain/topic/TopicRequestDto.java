@@ -1,4 +1,8 @@
 package com.devalrykemes.forumhub.domain.topic;
 
-public record TopicRequestDto(Long profileIdCreator, Long courseId, String title, String menssage) {
+import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
+public record TopicRequestDto(@Nonnull Long profileIdCreator,@Nonnull Long courseId, @NotEmpty @NotBlank String title, @NotEmpty @NotBlank String menssage) {
 }

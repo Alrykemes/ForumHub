@@ -1,4 +1,8 @@
 package com.devalrykemes.forumhub.domain.comment;
 
-public record CommentRequestDto(Long topicId, Long ProfileCreatorId, String menssage) {
+import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
+public record CommentRequestDto(@Nonnull Long topicId, @Nonnull Long profileCreatorId, @NotEmpty @NotBlank String menssage) {
 }

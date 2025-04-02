@@ -8,6 +8,8 @@ import com.devalrykemes.forumhub.domain.user.User;
 import com.devalrykemes.forumhub.repository.ProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,13 +31,26 @@ public class ProfileService {
     }
 
     public ProfileResponseDto updateProfile(ProfileUpdateDto profileUpdateDto) {
-        profileRepository.updateProfileById(profileUpdateDto.id(), profileUpdateDto.name(), profileUpdateDto.idUser());
-        return this.getProfileById(profileUpdateDto.id());
+        this.getProfileById(profileUpdateDto.id());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        if(profileRepository.existsByProfileIdAndCreatorEmail(profileUpdateDto.id(), userEmail)) {
+            profileRepository.updateProfileById(profileUpdateDto.id(), profileUpdateDto.name(), profileUpdateDto.idUser());
+            return this.getProfileById(profileUpdateDto.id());
+        } else {
+            throw new IllegalArgumentException("This Profile has not been created by this user!");
+        }
     }
 
     public void deleteById(Long id) {
         this.getProfileById(id);
-        profileRepository.deleteById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        if(profileRepository.existsByProfileIdAndCreatorEmail(id, userEmail)) {
+            profileRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("This Profile has not been created by this user!");
+        }
     }
 
     public Profile profileById(Long id) {

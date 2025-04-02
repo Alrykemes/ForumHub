@@ -1,12 +1,14 @@
 package com.devalrykemes.forumhub.service;
 
 import com.devalrykemes.forumhub.domain.user.User;
-import com.devalrykemes.forumhub.domain.user.UserRequestDto;
 import com.devalrykemes.forumhub.domain.user.UserResponseDto;
 import com.devalrykemes.forumhub.domain.user.UserUpdateDto;
 import com.devalrykemes.forumhub.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -16,43 +18,38 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto getUserById(UUID userId) throws IllegalArgumentException {
         return new UserResponseDto(this.userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found: " + userId)));
     }
 
-    public UserResponseDto createUser(UserRequestDto user) throws IllegalArgumentException {
-        if (user.email().contains("@")) {
-            if(user.password().equals(user.confirmPassword())) {
-                if(this.userRepository.existsByEmail(user.email())) {
-                    throw new IllegalArgumentException("Email already exists");
-                }
-                User newUser = this.userRepository.save(new User(user));
-                return new UserResponseDto(newUser);
-            } else {
-                throw new IllegalArgumentException("Passwords do not match");
-            }
-        } else {
-            throw new IllegalArgumentException("Email is not valid");
-        }
-    }
-
     public UserResponseDto updateUser(UserUpdateDto user) throws IllegalArgumentException {
-        if (user.email().contains("@")) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        if(this.userforProfileById(user.id()).getEmail().equals(userEmail)) {
+            if(this.userRepository.existsByEmail(user.email())) {
+                throw new IllegalArgumentException("Email already exists");
+            }
             if(user.password().equals(user.confirmPassword())) {
-                this.userRepository.updateUser(user.id(), user.name(), user.email(), user.password());
+                this.userRepository.updateUser(user.id(), user.name(), user.email(), passwordEncoder.encode(user.password()));
                 return this.getUserById(user.id());
             } else {
                 throw new IllegalArgumentException("Passwords do not match");
             }
         } else {
-            throw new IllegalArgumentException("Email is not valid");
+            throw new IllegalArgumentException("This user has not been created by this user!");
         }
     }
 
     public void deleteUser(UUID userId) {
-        this.getUserById(userId);
-        this.userRepository.deleteById(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        if(this.userforProfileById(userId).getEmail().equals(userEmail)) {
+            this.userRepository.deleteById(userId);
+        } else {
+            throw new IllegalArgumentException("This user has not been created by this user!");
+        }
     }
 
     public User userforProfileById(UUID userId) {
